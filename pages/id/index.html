@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <title>PSE Proxy</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="../css/index.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet "
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" media="all">
+</head>
+
+<body onload="fetch()">
+  <div class="navbar navbar-expand-lg navbar-light container-xxl">
+    <div class="container-lg" id="headbar">
+      <a class="sm-side-marginize navbar-brand" href="about.html">Tentang</a>
+      <a class="sm-side-marginize navbar-brand" href="support.html">Support</a>
+    </div>
+  </div>
+  <div id="container" style="overflow:auto">
+    <div class="color-background"></div>
+    <div class="container-lg" style="z-index: 3;">
+      <h1 id="title">PSE Proxy</h1>
+      <div class="container-sm ">
+        <h2 id="bottom-title">Situs alternatif database pse dengan fitur pencarian</h2  >
+      </div>
+      <div class="container-sm searchtab">
+        <input class="form-control me-2" id="keyword" type="search" placeholder="cari nama pse atau perusahaan" aria-label="cari" style="max-width: 720px;">
+        <button class="btn btn-outline-success" type="submit" onclick="search()" >Cari</button>
+      </div>
+      <div class="container-md containerhasil datatable-inner table-responsive ps ps--active-x ps--active-y"
+        style="z-index: 7;">
+        <table class="table table-bordered table-striped table-light" id="result-table">
+          <thead>
+            <tr>
+              <th scope="col">No.</th>
+              <th scope="col">Nama</th>
+              <th scope="col">Nama Perusahaan</th>
+              <th scope="col">Website</th>
+              <th scope="col">Tanggal Daftar</th>
+              <th scope="col">Sektor</th>
+            </tr>
+          </thead>
+          <tbody id="tabledata">
+          </tbody>
+        </table>
+      </div>
+      <p id="updated-text" class="sm-side-marginize"></p>
+      <div class="container-sm page-detail">
+        <p id="page-detail-text" class="sm-side-marginize">
+        </p>
+        <div class="container-sm pagenav" style="padding: 0px; margin: 0px; right: 0px;">
+          <button type="button" class="btn btn-outline-primary sm-side-marginize" onclick="prevpage()">
+            <</button>
+              <input class="form-control me-2 sm-side-marginize" id="pagetogo" type="number" placeholder="page"
+                aria-label="jumpto" style="max-width: 75px;">
+              <button type="button" class="btn btn-info sm-side-marginize" onclick="jumpto()">Lompat ke</button>
+              <button type="button" class="btn btn-outline-primary sm-side-marginize" onclick="nextpage()">></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer" id="footer-bg">
+      <p class="footercredits">
+        Site created by Jasson9
+      </p>
+    </div>
+  </div>
+</body>
+<script>
+  var currentpage, amountperpage, maxpage, keyword;
+  const dateoptions = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour:"numeric",
+    minute:"numeric"
+  };
+  async function tablebuilder(res) {
+    var data = Object.values(res.data.result);
+    try {
+      for (var i = 0; i < data.length; i++) {
+        $("#tabledata").append(`<tr><th scope="row">${(currentpage - 1) * amountperpage + i + 1}</th><td>${data[i].attributes.nama}</td><td>${data[i].attributes.nama_perusahaan}</td><td>${data[i].attributes.website}</td><td>${data[i].attributes.tanggal_daftar}</td><td>${data[i].attributes.sektor}</td></tr>`)
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+    $("#page-detail-text").text(`Halaman ke-${currentpage} dari ${maxpage}`)
+    $("#pagetogo").attr("value", currentpage);
+    $("#pagetogo").val(currentpage);
+    $("#updated-text").text(`Database diupdate pada ${new Date(res.data.metadata.updated_at).toLocaleString(['ban', 'id'],dateoptions)}`)
+  }
+
+  async function search() {
+    keyword = $("#keyword").val();
+    fetch(keyword)
+  }
+
+  function jumpto() {
+    var pagenumtogo = $("#pagetogo").val();
+    if (pagenumtogo < 1 || pagenumtogo > maxpage || pagenumtogo == currentpage) return
+    console.log(pagenumtogo)
+    if (!pagenumtogo) return
+    fetch(keyword, pagenumtogo, amountperpage);
+  }
+
+  async function fetch(keyword, pagenum, amount) {
+    $.get({
+      url: "api/fetchv2",
+      data: {
+        "keyword": keyword,
+        "page": pagenum,
+        "amount": amount
+      }
+    }, function (res, status) {
+      currentpage = Number(res.data.page);
+      amountperpage = res.data.amount;
+      maxpage = res.data.maxpage;
+      $("#tabledata").empty();
+      tablebuilder(res);
+    })
+  }
+
+  async function prevpage() {
+    if (currentpage <= 1) return
+    fetch(keyword, currentpage - 1, amountperpage);
+  }
+
+  async function nextpage() {
+    if (currentpage >= maxpage) return
+    fetch(keyword, currentpage + 1, amountperpage);
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"
+  integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+</html>

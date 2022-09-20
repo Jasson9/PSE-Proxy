@@ -1,0 +1,111 @@
+.searchtab{
+    display: flex;
+    z-index: 5;
+    height: 40px;
+    margin: 15px;
+    justify-content: center;
+}
+
+.color-background{
+    display: flex;
+    z-index: -1;
+    position: absolute;
+    height: 540px;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    background: linear-gradient(to bottom, rgb(251, 255, 169) , white);
+}
+
+#headbar{
+    justify-content: left;
+    flex-direction: row;
+    margin: 12px;
+}
+
+#footer-bg{
+    justify-content: center;
+    display: flex;
+    margin-top: 100px;
+    width: 100%;
+    height: 300px;
+    z-index: -1;
+    top: 100vmax;
+    left: 0px;
+    position: sticky;
+    background: linear-gradient(to top, rgba(58, 123, 255, 0.699) , white);;
+}
+
+#bottom-title{
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    display: flex;
+    color:black;
+    margin-bottom: 32px;
+    font-size: 24px;
+}
+
+#title{
+    font-weight: bolder;
+    color: rgba(0, 0, 234, 0.936);
+    display: flex;
+    justify-content: center;
+    font-size: 72px;
+    margin: 32px;
+    margin-top: 20px;
+    margin-bottom: 16px;
+}
+
+.footercredits{
+    margin-top: 150px;
+    height: max-content;
+}
+
+#result-table{
+    background-color: white;
+    border-radius: 10px;
+    border-color: rgb(154, 154, 154);
+    border-width: 3px;
+    overflow: hidden;
+    position: relative; 
+}
+
+th{
+    justify-content: center;
+}
+
+.page-detail{
+    display: flex;
+    padding: 10px;
+    justify-self: right;
+    justify-content: right;
+    flex-direction: row;
+}
+
+.pagenav{
+    flex-basis: content;
+    display: flex;
+    
+}
+
+.sm-side-marginize{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#updated-text{
+    justify-content: left;
+    justify-self: left;
+    left: 0px;
+    text-align: left;
+    display: block;
+    margin-bottom: 0px;
+}
+
+#page-detail-text{
+    display: flex;
+    margin: 0px;
+    justify-self: right;
+    align-content: right;
+}
